@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <title>Moja Herná Databáza - Admin Mode</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background:#121212; color:#eee; text-align:center; padding:20px; margin: 0; }
+        .admin-box { background: #1e1e1e; padding: 20px; border-radius: 12px; display: inline-block; margin-bottom: 30px; border: 2px solid gold; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
+        .game { background: #1e1e1e; margin: 20px auto; padding: 20px; border-radius: 12px; max-width: 400px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.5); position: relative; }
+        
+        .image-container { width: 100%; height: 220px; background: black; border-radius: 8px; overflow: hidden; margin: 15px 0; border: 1px solid #444; display: flex; align-items: center; justify-content: center; }
+        img { max-width: 100%; max-height: 100%; object-fit: contain; }
+        
+        /* Admin ovládanie priamo na karte hry */
+        .admin-tools { display: none; position: absolute; top: 10px; right: 10px; gap: 5px; }
+        .btn-admin { background: #444; border: 1px solid #666; color: white; cursor: pointer; border-radius: 4px; padding: 5px 8px; font-size: 12px; }
+        .btn-admin:hover { background: gold; color: black; }
+
+        .rating-form { display: none; background: #252525; padding: 15px; border-radius: 8px; margin-top: 10px; border: 1px dashed gold; }
+        .rating-category { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .category-label { font-size: 0.9em; color: gold; font-weight: bold; width: 100px; text-align: left; }
+        
+        .star-input { font-size: 24px; cursor: pointer; color: #444; transition: 0.2s; }
+        .star-input.active { color: gold; }
+
+        .stats { font-size: 0.85em; color: #aaa; margin: 10px 0; display: flex; justify-content: space-around; background: #181818; padding: 5px; border-radius: 5px; }
+        .total-rating { text-align: center; margin-top: 15px; padding: 10px; background: #2a2a2a; border-radius: 8px; border: 1px solid gold; }
+        .total-score { font-size: 1.8em; font-weight: bold; color: white; }
+
+        input { padding: 10px; margin: 5px; border-radius: 6px; border: 1px solid #444; background: #2a2a2a; color: white; width: 200px; }
+        button { padding: 10px 20px; background: gold; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; margin: 5px; transition: 0.3s; }
+        button:hover { background: #ffdb4d; }
+        
+        .btn-vote { background: #444; color: white; font-size: 0.9em; width: 100%; margin-top: 10px; }
+        .btn-send { background: #28a745; color: white; width: 100%; margin-top: 10px; }
+        #status { color: gold; font-size: 0.9em; margin-top: 10px; min-height: 1.2em; }
+    </style>
+</head>
+<body>
+
+<h1>🎮 Moja Herná Databáza</h1>
+
+<div class="admin-box">
+    <input type="password" id="adminPass" placeholder="Heslo pre Admin/Pridanie" oninput="checkAdminPass()">
+    <div id="adminFields" style="display:none; margin-top:10px;">
+        <input type="text" id="gameName" placeholder="Názov hry">
+        <input type="text" id="gameImg" placeholder="URL obrázku">
+        <button onclick="addGame()">Pridať novú hru</button>
+    </div>
+    <div id="status"></div>
+</div>
+
+<div id="gamesContainer">Načítavam databázu...</div>
+
+<script>
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzPmpyk0_856OYqn2uX5sf1NRj6_12z_eFBd8Vu6ujJrOTZDjwL1zmofbE1vjZCMcj9UQ/exec";
+    const ADMIN_PASS = "1234";
+    let games = [];
+    let currentVoterSelection = { gameplay: 0, graphics: 0, story: 0 };
+    let isAdmin = false;
+
+    async function loadFromDisk() {
+        try {
+            const res = await fetch(SCRIPT_URL);
+            games = await res.json();
+            renderGames();
+        } catch (e) { document.getElementById('gamesContainer').innerText = "Chyba pripojenia k Disku."; }
+    }
+
+    async function saveToDisk() {
+        document.getElementById('status').innerText = "Synchronizujem s Diskom...";
+        await fetch(SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify(games)
+        });
+        document.getElementById('status').innerText = "Dáta uložené!";
+        setTimeout(() => document.getElementById('status').innerText = "", 2000);
+    }
+
+    // Funkcia, ktorá kontroluje heslo v reálnom čase
+    function checkAdminPass() {
+        const pass = document.getElementById('adminPass').value;
+        const fields = document.getElementById('adminFields');
+        
+        if(pass === ADMIN_PASS) {
+            fields.style.display = "block";
+            isAdmin = true;
+        } else {
+            fields.style.display = "none";
+            isAdmin = false;
+        }
+        renderGames(); // Prekreslíme hry, aby sa ukázali/skryli admin tlačidlá
+    }
+
+    function addGame() {
+        const name = document.getElementById('gameName').value.trim();
+        const img = document.getElementById('gameImg').value.trim();
+        if(!name || !img) return alert("Vyplň údaje!");
+
+        games.push({ 
+            name, img, votes: 0,
+            ratings: { gameplay: 0, graphics: 0, story: 0 }
+        });
+        renderGames();
+        saveToDisk();
+        document.getElementById('gameName').value = "";
+        document.getElementById('gameImg').value = "";
+    }
+
+    // ADMIN FUNKCIE: Mazanie a Premenovanie
+    function deleteGame(index) {
+        if(confirm(`Naozaj chceš vymazať hru ${games[index].name}?`)) {
+            games.splice(index, 1);
+            renderGames();
+            saveToDisk();
+        }
+    }
+
+    function renameGame(index) {
+        const newName = prompt("Zadaj nový názov hry:", games[index].name);
+        if(newName && newName.trim() !== "") {
+            games[index].name = newName.trim();
+            renderGames();
+            saveToDisk();
+        }
+    }
+
+    // HLASOVACIE FUNKCIE
+    function toggleRatingForm(index) {
+        const form = document.getElementById(`form-${index}`);
+        form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        currentVoterSelection = { gameplay: 0, graphics: 0, story: 0 };
+        updateStarsDisplay(index);
+    }
+
+    function setVote(index, cat, val) {
+        currentVoterSelection[cat] = val;
+        updateStarsDisplay(index);
+    }
+
+    function updateStarsDisplay(index) {
+        ['gameplay', 'graphics', 'story'].forEach(cat => {
+            for(let i=1; i<=5; i++) {
+                const star = document.getElementById(`star-${index}-${cat}-${i}`);
+                if(star) star.classList.toggle('active', i <= currentVoterSelection[cat]);
+            }
+        });
+    }
+
+    async function submitVote(index) {
+        if(currentVoterSelection.gameplay === 0 || currentVoterSelection.graphics === 0 || currentVoterSelection.story === 0) {
+            return alert("Ohodnoť všetky kategórie!");
+        }
+        games[index].votes += 1;
+        games[index].ratings.gameplay += currentVoterSelection.gameplay;
+        games[index].ratings.graphics += currentVoterSelection.graphics;
+        games[index].ratings.story += currentVoterSelection.story;
+        renderGames();
+        await saveToDisk();
+        alert("Vďaka za hlas!");
+    }
+
+    function renderGames() {
+        const container = document.getElementById('gamesContainer');
+        container.innerHTML = '';
+        games.forEach((game, index) => {
+            const v = game.votes || 0;
+            const gAvg = v > 0 ? (game.ratings.gameplay / v).toFixed(1) : "0.0";
+            const grAvg = v > 0 ? (game.ratings.graphics / v).toFixed(1) : "0.0";
+            const sAvg = v > 0 ? (game.ratings.story / v).toFixed(1) : "0.0";
+            const totalAvg = v > 0 ? ((parseFloat(gAvg) + parseFloat(grAvg) + parseFloat(sAvg)) / 3).toFixed(1) : "0.0";
+
+            container.innerHTML += `
+                <div class="game">
+                    <div class="admin-tools" style="display: ${isAdmin ? 'flex' : 'none'}">
+                        <button class="btn-admin" onclick="renameGame(${index})">✏️</button>
+                        <button class="btn-admin" onclick="deleteGame(${index})" style="color:red;">🗑️</button>
+                    </div>
+
+                    <h3>${game.name}</h3>
+                    <div class="image-container"><img src="${game.img}"></div>
+                    
+                    <div class="stats">
+                        <span>Hrateľnosť: ${gAvg}</span>
+                        <span>Grafika: ${grAvg}</span>
+                        <span>Príbeh: ${sAvg}</span>
+                    </div>
+
+                    <div class="total-rating">
+                        <div class="total-score">⭐ ${totalAvg} / 5</div>
+                        <div style="font-size:0.8em; color:#aaa;">Hlasovalo: ${v}x</div>
+                    </div>
+
+                    <button class="btn-vote" onclick="toggleRatingForm(${index})">Ohodnotiť hru</button>
+
+                    <div id="form-${index}" class="rating-form">
+                        ${renderStarRow(index, 'gameplay', 'Hrateľnosť')}
+                        ${renderStarRow(index, 'graphics', 'Grafika')}
+                        ${renderStarRow(index, 'story', 'Príbeh')}
+                        <button class="btn-send" onclick="submitVote(${index})">Odoslať hodnotenie</button>
+                    </div>
+                </div>
+            `;
+        });
+    }
+
+    function renderStarRow(index, cat, label) {
+        let stars = '';
+        for(let i=1; i<=5; i++) {
+            stars += `<span id="star-${index}-${cat}-${i}" class="star-input" onclick="setVote(${index}, '${cat}', ${i})">★</span>`;
+        }
+        return `<div class="rating-category"><span class="category-label">${label}</span><div>${stars}</div></div>`;
+    }
+
+    window.onload = loadFromDisk;
+</script>
+</body>
+</html>
