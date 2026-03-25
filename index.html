@@ -3,7 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Moja Herná Databáza</title>
+    
+    <title>GamesProRank | Databáza a Hodnotenie Hier</title>
+    <meta name="description" content="GamesProRank - tvoja osobná databáza hier. Hodnoť grafiku, gameplay a príbeh svojich obľúbených titulov.">
+    <meta name="keywords" content="hry, hodnotenie hier, games ranking, databáza hier, GamesProRank">
+    <meta name="author" content="nuthazel2000">
+
     <style>
         :root { 
             --gold: #ffd700; 
@@ -152,7 +157,7 @@
 <body>
 
     <div class="container">
-        <h1>GamesProRank</h1>
+        <h1>🎮 GamesProRank</h1>
         
         <div class="top-bar">
             <input type="text" id="searchInput" class="search-input" placeholder="🔍 Hľadať hru..." oninput="render()">
@@ -184,9 +189,9 @@
         <div id="grid" class="games-grid">Načítavam...</div>
 
         <div class="request-section">
-            <h2 style="color:var(--gold)">Nenašli ste, čo ste hľadali?</h2>
-            <p>Dajte mi vedieť a ja hru pridám!</p>
-            <input type="text" id="requestGameName" class="request-input" placeholder="Názov chýbajúcej hry...">
+            <h2 style="color:var(--gold)">Nenašli ste hru?</h2>
+            <p>Navrhnite ju a ja ju pridám do databázy!</p>
+            <input type="text" id="requestGameName" class="request-input" placeholder="Názov hry...">
             <button id="reqBtn" class="btn-gold" style="width: auto; padding: 12px 40px;" onclick="sendRequest()">Poslať návrh</button>
             <div id="reqStatus" style="margin-top:10px; color:var(--gold)"></div>
         </div>
@@ -197,7 +202,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwWtMqh_C8HG9ORrOmnMaZZ46kvf2O6-tWlLUn6cgwsK0sXkXFJU43c5G5E2GaSYEn-2Q/exec"; // DOPLŇ SVOJU URL
+        // SEM VLOŽ SVOJU URL ADRESU Z GOOGLE SCRIPTU (DEPLOY)
+        const SCRIPT_URL = "SEM_VLOŽ_SVOJU_URL"; 
 
         let gamesData = [];
         let curIdx = null;
@@ -214,26 +220,22 @@
             } catch(e) { document.getElementById('grid').innerText = "Chyba pripojenia."; }
         }
 
-        // --- NOVÁ FUNKCIA NA PRIAME ODOSIELANIE ---
         async function sendRequest() {
             const gameName = document.getElementById('requestGameName').value;
             const btn = document.getElementById('reqBtn');
             const status = document.getElementById('reqStatus');
 
             if(!gameName) return alert("Napíš názov hry!");
-
             btn.disabled = true;
             status.innerText = "⏳ Odosielam...";
 
             try {
-                // Posielame špeciálny objekt s kľúčom 'requestGame'
                 await fetch(SCRIPT_URL, {
                     method: 'POST',
                     mode: 'no-cors',
                     body: JSON.stringify({ requestGame: gameName })
                 });
-
-                status.innerText = "✅ Návrh bol úspešne odoslaný priamo na môj email!";
+                status.innerText = "✅ Návrh bol úspešne odoslaný!";
                 document.getElementById('requestGameName').value = "";
             } catch(e) {
                 status.innerText = "❌ Chyba pri odosielaní.";
@@ -325,14 +327,6 @@
             document.getElementById('modal').style.display = 'block';
         }
 
-        async function resetVotes(i) {
-            if(!confirm("Zmazať všetky hodnotenia?")) return;
-            const g = gamesData[i];
-            g.votes = 0; g.ratings = {gameplay:0,graphics:0,story:0,physics:0,music:0};
-            localStorage.removeItem('voted_' + g.name);
-            render(); openGame(i); await sync();
-        }
-
         function checkAdmin() { 
             isAdmin = (document.getElementById('pass').value === "1234");
             document.getElementById('adminArea').style.display = isAdmin ? 'block' : 'none';
@@ -404,8 +398,28 @@
             const g = gamesData[curIdx];
             g.votes = (g.votes || 0) + 1;
             if(!g.ratings) g.ratings = {gameplay:0,graphics:0,story:0,physics:0,music:0};
-            for(let k in tempV) g.ratings[k] += tempV[k];
+            
+            let totalAddedStars = 0;
+            for(let k in tempV) {
+                g.ratings[k] += tempV[k];
+                totalAddedStars += tempV[k];
+            }
+            
+            // PRIEMER ZA TENTO JEDEN HLAS (pre report)
+            let oneVoteAvg = (totalAddedStars / 5).toFixed(1);
+
             localStorage.setItem('voted_' + g.name, "true");
+
+            // --- ODOSLANIE PRE DENNÝ REPORT ---
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                body: JSON.stringify({
+                    gameRating: g.name,
+                    stars: oneVoteAvg
+                })
+            });
+
             closeM(); render(); await sync();
         }
 
