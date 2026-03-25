@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <title>GamesProRank | Databáza a Hodnotenie Hier</title>
-    <meta name="description" content="GamesProRank - tvoja osobná databáza hier. Hodnoť grafiku, gameplay a príbeh svojich obľúbených titulov.">
-    <meta name="keywords" content="hry, hodnotenie hier, games ranking, databáza hier, GamesProRank">
-    <meta name="author" content="nuthazel2000">
-
     <style>
         :root { 
             --gold: #ffd700; 
@@ -34,13 +29,9 @@
 
         body::before {
             content: "";
-            position: fixed;
-            top: 0;
-            left: 50%;
+            position: fixed; top: 0; left: 50%;
             transform: translateX(-50%);
-            width: 100%;
-            max-width: 1300px;
-            height: 100%;
+            width: 100%; max-width: 1300px; height: 100%;
             background: rgba(0, 0, 0, 0.88);
             z-index: 0; 
             border-left: 2px solid var(--gold);
@@ -48,94 +39,25 @@
             box-shadow: 0 0 100px 50px rgba(0,0,0,0.9);
         }
 
-        .container {
-            position: relative;
-            z-index: 1; 
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px 40px 20px;
-        }
-
-        h1 { 
-            font-size: 2.8em; 
-            text-transform: uppercase; 
-            letter-spacing: 4px; 
-            padding: 40px 0 20px 0;
-            margin: 0;
-            text-shadow: 3px 3px 15px rgba(0,0,0,1); 
-            color: white;
-        }
+        .container { position: relative; z-index: 1; max-width: 1200px; margin: 0 auto; padding: 0 20px 40px 20px; }
+        h1 { font-size: 2.8em; text-transform: uppercase; letter-spacing: 4px; padding: 40px 0 20px 0; margin: 0; text-shadow: 3px 3px 15px rgba(0,0,0,1); color: white; }
 
         .top-bar { 
-            position: sticky;
-            top: 0;
-            z-index: 10; 
-            background: var(--nav-bg);
-            padding: 20px 10px;
-            margin-bottom: 30px; 
-            display: flex; 
-            flex-wrap: wrap; 
-            gap: 12px; 
-            justify-content: center; 
-            align-items: center; 
-            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+            position: sticky; top: 0; z-index: 10; background: var(--nav-bg); padding: 20px 10px; margin-bottom: 30px; 
+            display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; 
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3); box-shadow: 0 10px 20px rgba(0,0,0,0.5);
         }
         
-        .filter-select, .search-input { 
-            padding: 10px; 
-            background: #111; 
-            color: white; 
-            border: 1px solid var(--gold); 
-            border-radius: 8px;
-            outline: none;
-        }
-
-        .games-grid { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); 
-            gap: 25px; 
-            margin-bottom: 50px;
-        }
-
-        .game-card { 
-            background: var(--card-bg); 
-            padding: 15px; 
-            border-radius: 12px; 
-            border: 1px solid #333; 
-            cursor: pointer; 
-            transition: 0.3s ease;
-        }
-
-        .game-card:hover { 
-            border-color: var(--gold); 
-            transform: translateY(-8px); 
-        }
-
+        .filter-select, .search-input { padding: 10px; background: #111; color: white; border: 1px solid var(--gold); border-radius: 8px; outline: none; }
+        .games-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; margin-bottom: 50px; }
+        .game-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid #333; cursor: pointer; transition: 0.3s ease; }
+        .game-card:hover { border-color: var(--gold); transform: translateY(-8px); }
         .game-card img { width: 100%; border-radius: 8px; height: 300px; object-fit: cover; }
         .game-info-main { color: var(--gold); font-weight: bold; margin: 5px 0; }
         .game-info-sub { font-size: 0.8em; color: #aaa; }
 
-        .request-section {
-            background: rgba(20, 20, 20, 0.9);
-            padding: 30px;
-            border-radius: 15px;
-            border: 1px dashed var(--gold);
-            margin-top: 50px;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .request-input { 
-            width: 80%; 
-            padding: 12px; 
-            margin: 10px 0; 
-            background: #111; 
-            border: 1px solid #444; 
-            color: white; 
-            border-radius: 8px; 
-        }
+        .request-section { background: rgba(20, 20, 20, 0.9); padding: 30px; border-radius: 15px; border: 1px dashed var(--gold); margin-top: 50px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .request-input { width: 80%; padding: 12px; margin: 10px 0; background: #111; border: 1px solid #444; color: white; border-radius: 8px; }
 
         .modal { display: none; position: fixed; z-index: 100; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); overflow-y: auto; }
         .modal-content { background: #111; margin: 5% auto; padding: 30px; width: 90%; max-width: 500px; border-radius: 20px; border: 1px solid var(--gold); }
@@ -157,7 +79,7 @@
 <body>
 
     <div class="container">
-        <h1>🎮 GamesProRank</h1>
+        <h1> GamesProRank</h1>
         
         <div class="top-bar">
             <input type="text" id="searchInput" class="search-input" placeholder="🔍 Hľadať hru..." oninput="render()">
@@ -202,7 +124,7 @@
     </div>
 
     <script>
-        // SEM VLOŽ SVOJU URL ADRESU Z GOOGLE SCRIPTU (DEPLOY)
+        // TU VLOŽ SVOJU URL Z OBRAZKA cfcb5f.png
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwNhm0g4TT7SkW81lsgYY3dtyPfjPP4SNobpfttyMFRf7e00Q4r9OmGMaxDTLxgJ33Amw/exec"; 
 
         let gamesData = [];
@@ -215,168 +137,98 @@
                 const res = await fetch(SCRIPT_URL);
                 const data = await res.json();
                 gamesData = Array.isArray(data) ? data : [];
-                updateFilters();
-                render();
+                updateFilters(); render();
             } catch(e) { document.getElementById('grid').innerText = "Chyba pripojenia."; }
         }
 
         async function sendRequest() {
             const gameName = document.getElementById('requestGameName').value;
-            const btn = document.getElementById('reqBtn');
-            const status = document.getElementById('reqStatus');
-
+            const btn = document.getElementById('reqBtn'), status = document.getElementById('reqStatus');
             if(!gameName) return alert("Napíš názov hry!");
-            btn.disabled = true;
-            status.innerText = "⏳ Odosielam...";
-
+            btn.disabled = true; status.innerText = "⏳ Odosielam...";
             try {
-                await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    mode: 'no-cors',
-                    body: JSON.stringify({ requestGame: gameName })
-                });
+                await fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ requestGame: gameName }) });
                 status.innerText = "✅ Návrh bol úspešne odoslaný!";
                 document.getElementById('requestGameName').value = "";
-            } catch(e) {
-                status.innerText = "❌ Chyba pri odosielaní.";
-            } finally {
-                btn.disabled = false;
-            }
+            } catch(e) { status.innerText = "❌ Chyba pri odosielaní."; } finally { btn.disabled = false; }
         }
 
         function updateFilters() {
             const yF = document.getElementById('yearFilter'), gF = document.getElementById('genreFilter'), pF = document.getElementById('pubFilter');
             const years = [...new Set(gamesData.map(g => g.year))].filter(y => y).sort((a,b) => b-a);
-            yF.innerHTML = '<option value="all">Všetky roky</option>';
-            years.forEach(y => yF.add(new Option(y, y)));
-            let allGenres = [];
-            gamesData.forEach(g => { if(g.genre) g.genre.split(',').forEach(p => allGenres.push(p.trim())); });
-            gF.innerHTML = '<option value="all">Všetky žánre</option>';
-            [...new Set(allGenres)].sort().forEach(g => gF.add(new Option(g, g)));
+            yF.innerHTML = '<option value="all">Všetky roky</option>'; years.forEach(y => yF.add(new Option(y, y)));
+            let allGenres = []; gamesData.forEach(g => { if(g.genre) g.genre.split(',').forEach(p => allGenres.push(p.trim())); });
+            gF.innerHTML = '<option value="all">Všetky žánre</option>'; [...new Set(allGenres)].sort().forEach(g => gF.add(new Option(g, g)));
             const publishers = [...new Set(gamesData.map(g => g.publisher))].filter(p => p).sort();
-            pF.innerHTML = '<option value="all">Všetci vydavatelia</option>';
-            publishers.forEach(p => pF.add(new Option(p, p)));
+            pF.innerHTML = '<option value="all">Všetci vydavatelia</option>'; publishers.forEach(p => pF.add(new Option(p, p)));
         }
 
         function getSafeAvg(total, votes) { return votes > 0 ? Math.min(5, Math.floor((total / votes) * 10) / 10) : 0; }
-
         function getAvgTotal(game) {
-            const v = game.votes || 0;
-            if (v === 0) return 0;
+            const v = game.votes || 0; if (v === 0) return 0;
             const r = game.ratings || {gameplay:0,graphics:0,story:0,physics:0,music:0};
             return Math.floor(([r.gameplay, r.graphics, r.story, r.physics, r.music].map(val => getSafeAvg(val, v)).reduce((a, b) => a + b, 0) / 5) * 10) / 10;
         }
 
         function render() {
-            const grid = document.getElementById('grid');
-            const search = document.getElementById('searchInput').value.toLowerCase();
-            const sort = document.getElementById('sortOrder').value;
-            const selY = document.getElementById('yearFilter').value;
-            const selG = document.getElementById('genreFilter').value;
-            const selP = document.getElementById('pubFilter').value;
+            const grid = document.getElementById('grid'), search = document.getElementById('searchInput').value.toLowerCase();
+            const sort = document.getElementById('sortOrder').value, selY = document.getElementById('yearFilter').value, selG = document.getElementById('genreFilter').value, selP = document.getElementById('pubFilter').value;
             grid.innerHTML = '';
-
             let display = gamesData.map((obj, i) => ({...obj, originalIndex: i}));
             display = display.filter(game => {
                 const matchSearch = (game.name || "").toLowerCase().includes(search);
-                const matchYear = (selY === "all" || game.year == selY);
-                const matchPub = (selP === "all" || game.publisher == selP);
+                const matchYear = (selY === "all" || game.year == selY), matchPub = (selP === "all" || game.publisher == selP);
                 let matchGenre = (selG === "all") || (game.genre && game.genre.split(',').map(p => p.trim()).includes(selG));
                 return matchSearch && matchYear && matchGenre && matchPub;
             });
-
             if (sort === "high") display.sort((a, b) => getAvgTotal(b) - getAvgTotal(a));
             else if (sort === "newest") display.sort((a, b) => (b.year || 0) - (a.year || 0));
-            else if (sort === "oldest") display.sort((a, b) => (a.year || 0) - (b.year || 0));
             else if (sort === "abc") display.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
-
             display.forEach((game) => {
                 const avg = getAvgTotal(game).toFixed(1);
-                grid.innerHTML += `
-                <div class="game-card" onclick="openGame(${game.originalIndex})">
-                    <img src="${game.img || 'https://via.placeholder.com/300x400'}">
-                    <h3>${game.name || 'Bez názvu'}</h3>
-                    <div class="game-info-main">⭐ ${avg} | ${game.publisher || 'Neznámy'}</div>
-                    <div class="game-info-sub">${game.genre || 'Rôzne'} (${game.year || '?'})</div>
-                </div>`;
+                grid.innerHTML += `<div class="game-card" onclick="openGame(${game.originalIndex})"><img src="${game.img || 'https://via.placeholder.com/300x400'}"><h3>${game.name || 'Bez názvu'}</h3><div class="game-info-main">⭐ ${avg} | ${game.publisher || 'Neznámy'}</div><div class="game-info-sub">${game.genre || 'Rôzne'} (${game.year || '?'})</div></div>`;
             });
         }
 
         function openGame(i) {
-            curIdx = i; const game = gamesData[i];
-            const v = game.votes || 0, r = game.ratings || {gameplay:0,graphics:0,story:0,physics:0,music:0};
-            const getA = (k) => getSafeAvg(r[k], v).toFixed(1);
-            const hasVoted = localStorage.getItem('voted_' + game.name);
-
+            curIdx = i; const game = gamesData[i], v = game.votes || 0, r = game.ratings || {gameplay:0,graphics:0,story:0,physics:0,music:0};
+            const getA = (k) => getSafeAvg(r[k], v).toFixed(1), hasVoted = localStorage.getItem('voted_' + game.name);
             document.getElementById('mContent').innerHTML = `
-                <img src="${game.img}" class="modal-img">
-                <h2>${game.name}</h2>
-                <div class="rating-box">
-                    <span>Gameplay: ⭐${getA('gameplay')}</span> <span>Grafika: ⭐${getA('graphics')}</span>
-                    <span>Príbeh: ⭐${getA('story')}</span> <span>Fyzika: ⭐${getA('physics')}</span>
-                    <span>Hudba: ⭐${getA('music')}</span>
-                </div>
-                ${isAdmin ? `
-                    <button class="btn-gold" onclick="prepEdit(${i})">✏️ UPRAVIŤ</button>
-                    <button class="btn-red" style="background:#cc8800; color:white;" onclick="resetVotes(${i})">🔄 VYNULOVAŤ HLASY</button>
-                    <button class="btn-red" onclick="deleteGame(${i})">🗑️ VYMAZAŤ HRU</button>
-                ` : ''}
+                <img src="${game.img}" class="modal-img"><h2>${game.name}</h2>
+                <div class="rating-box"><span>Gameplay: ⭐${getA('gameplay')}</span> <span>Grafika: ⭐${getA('graphics')}</span><span>Príbeh: ⭐${getA('story')}</span> <span>Fyzika: ⭐${getA('physics')}</span><span>Hudba: ⭐${getA('music')}</span></div>
+                ${isAdmin ? `<button class="btn-gold" onclick="prepEdit(${i})">✏️ UPRAVIŤ</button><button class="btn-red" style="background:#cc8800;" onclick="resetVotes(${i})">🔄 VYNULOVAŤ HLASY</button><button class="btn-red" onclick="deleteGame(${i})">🗑️ VYMAZAŤ HRU</button>` : ''}
                 ${hasVoted ? '<p style="color:var(--gold)">✅ Už si hlasoval</p>' : '<button class="btn-gold" onclick="drawVote()">✍️ HODNOTIŤ</button>'}
-                <button class="btn-close" onclick="closeM()">Zatvoriť</button>
-            `;
+                <button class="btn-close" onclick="closeM()">Zatvoriť</button>`;
             document.getElementById('modal').style.display = 'block';
         }
 
-        function checkAdmin() { 
-            isAdmin = (document.getElementById('pass').value === "1234");
-            document.getElementById('adminArea').style.display = isAdmin ? 'block' : 'none';
-            render();
+        async function resetVotes(i) {
+            if(!confirm("Naozaj chcete vynulovať všetky hlasy pre túto hru?")) return;
+            gamesData[i].votes = 0;
+            gamesData[i].ratings = {gameplay:0,graphics:0,story:0,physics:0,music:0};
+            localStorage.removeItem('voted_' + gamesData[i].name);
+            await sync(); render(); openGame(i);
         }
 
+        function checkAdmin() { isAdmin = (document.getElementById('pass').value === "1234"); document.getElementById('adminArea').style.display = isAdmin ? 'block' : 'none'; render(); }
         function prepEdit(i) {
             editIdx = i; const g = gamesData[i];
-            document.getElementById('nN').value = g.name; document.getElementById('nI').value = g.img;
-            document.getElementById('nY').value = g.year; document.getElementById('nG').value = g.genre;
-            document.getElementById('nP').value = g.publisher || '';
-            document.getElementById('adminTitle').innerText = "✏️ Upraviť: " + g.name;
-            document.getElementById('adminBtn').innerText = "Uložiť";
-            document.getElementById('cancelEdit').style.display = "block";
-            document.getElementById('adminBtn').onclick = saveEdit;
+            document.getElementById('nN').value = g.name; document.getElementById('nI').value = g.img; document.getElementById('nY').value = g.year; document.getElementById('nG').value = g.genre; document.getElementById('nP').value = g.publisher || '';
+            document.getElementById('adminTitle').innerText = "✏️ Upraviť: " + g.name; document.getElementById('adminBtn').innerText = "Uložiť"; document.getElementById('cancelEdit').style.display = "block"; document.getElementById('adminBtn').onclick = saveEdit;
             closeM(); window.scrollTo({top: 0, behavior: 'smooth'});
         }
-
-        async function saveEdit() {
-            const g = gamesData[editIdx];
-            g.name = document.getElementById('nN').value; g.img = document.getElementById('nI').value;
-            g.year = document.getElementById('nY').value; g.genre = document.getElementById('nG').value;
-            g.publisher = document.getElementById('nP').value;
-            resetAdmin(); updateFilters(); render(); await sync();
-        }
-
-        async function deleteGame(i) {
-            if(!confirm("Vymazať?")) return;
-            gamesData.splice(i, 1); closeM(); updateFilters(); render(); await sync();
-        }
-
-        function resetAdmin() {
-            editIdx = null; document.querySelectorAll('.admin-panel input').forEach(i => i.value = '');
-            document.getElementById('adminTitle').innerText = "➕ Pridať novú hru";
-            document.getElementById('adminBtn').innerText = "Pridať hru";
-            document.getElementById('adminBtn').onclick = addGame;
-            document.getElementById('cancelEdit').style.display = "none";
-        }
-
+        async function saveEdit() { const g = gamesData[editIdx]; g.name = document.getElementById('nN').value; g.img = document.getElementById('nI').value; g.year = document.getElementById('nY').value; g.genre = document.getElementById('nG').value; g.publisher = document.getElementById('nP').value; resetAdmin(); updateFilters(); render(); await sync(); }
+        async function deleteGame(i) { if(!confirm("Vymazať?")) return; gamesData.splice(i, 1); closeM(); updateFilters(); render(); await sync(); }
+        function resetAdmin() { editIdx = null; document.querySelectorAll('.admin-panel input').forEach(i => i.value = ''); document.getElementById('adminTitle').innerText = "➕ Pridať novú hru"; document.getElementById('adminBtn').innerText = "Pridať hru"; document.getElementById('adminBtn').onclick = addGame; document.getElementById('cancelEdit').style.display = "none"; }
         async function addGame() {
             const n = document.getElementById('nN').value; if(!n) return;
-            gamesData.push({
-                name: n, img: document.getElementById('nI').value, year: document.getElementById('nY').value, genre: document.getElementById('nG').value,
-                publisher: document.getElementById('nP').value, votes: 0, ratings: {gameplay:0,graphics:0,story:0,physics:0,music:0}
-            });
+            gamesData.push({ name: n, img: document.getElementById('nI').value, year: document.getElementById('nY').value, genre: document.getElementById('nG').value, publisher: document.getElementById('nP').value, votes: 0, ratings: {gameplay:0,graphics:0,story:0,physics:0,music:0} });
             resetAdmin(); updateFilters(); render(); await sync();
         }
 
         let tempV = {gameplay:0,graphics:0,story:0,physics:0,music:0};
         function drawVote() {
+            tempV = {gameplay:0,graphics:0,story:0,physics:0,music:0}; // Reset pred kreslením
             let h = '<h3>Hodnotenie (1-5):</h3>';
             ['gameplay','graphics','story','physics','music'].forEach(cat => {
                 h += `<div style="text-transform:capitalize">${cat}</div><div id="s-${cat}">`;
@@ -384,43 +236,20 @@
                 h += `</div>`;
             });
             h += `<button class="btn-gold" onclick="saveVote()" style="margin-top:20px;">ODOSLAŤ</button>`;
+            h += `<button class="btn-close" onclick="openGame(${curIdx})">ZRUŠIŤ</button>`; // TOTO TLACIDLO SI CHCEL
             document.getElementById('mContent').innerHTML = h;
         }
 
-        function setStar(c, v) {
-            tempV[c] = v;
-            const stars = document.getElementById('s-'+c).children;
-            for(let i=0; i<5; i++) stars[i].style.color = i < v ? "var(--gold)" : "#444";
-        }
+        function setStar(c, v) { tempV[c] = v; const stars = document.getElementById('s-'+c).children; for(let i=0; i<5; i++) stars[i].style.color = i < v ? "var(--gold)" : "#444"; }
 
         async function saveVote() {
-            if(Object.values(tempV).includes(0)) return alert("Odhlasuj všetko!");
-            const g = gamesData[curIdx];
-            g.votes = (g.votes || 0) + 1;
+            if(Object.values(tempV).includes(0)) return alert("Prosím, ohodnoťte všetky kategórie!");
+            const g = gamesData[curIdx]; g.votes = (g.votes || 0) + 1;
             if(!g.ratings) g.ratings = {gameplay:0,graphics:0,story:0,physics:0,music:0};
-            
-            let totalAddedStars = 0;
-            for(let k in tempV) {
-                g.ratings[k] += tempV[k];
-                totalAddedStars += tempV[k];
-            }
-            
-            // PRIEMER ZA TENTO JEDEN HLAS (pre report)
-            let oneVoteAvg = (totalAddedStars / 5).toFixed(1);
-
+            let totalS = 0; for(let k in tempV) { g.ratings[k] += tempV[k]; totalS += tempV[k]; }
             localStorage.setItem('voted_' + g.name, "true");
-
-            // --- ODOSLANIE PRE DENNÝ REPORT ---
-            fetch(SCRIPT_URL, {
-                method: 'POST',
-                mode: 'no-cors',
-                body: JSON.stringify({
-                    gameRating: g.name,
-                    stars: oneVoteAvg
-                })
-            });
-
-            closeM(); render(); await sync();
+            fetch(SCRIPT_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify({ gameRating: g.name, stars: (totalS/5).toFixed(1) }) });
+            render(); openGame(curIdx); await sync();
         }
 
         async function sync() {
